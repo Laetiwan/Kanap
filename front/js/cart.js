@@ -1,10 +1,20 @@
 //Cart
 
 //Récupérer le panier de la page produits
-
-let productCart = localStorage.getItem('data[0]');
-//let productCart = JSON.parse(localStorage.getItem("data"));
+let productData = localStorage.getItem("data")
+      ? JSON.parse(localStorage.getItem("data"))
+      : [];
+console.log('data1',productData);
+let productCart = localStorage.getItem("data");
+//let productCartJSON = JSON.parse(localStorage.getItem("data"));
 console.log('data',productCart);
+
+
+// Vérification qu'il ne soit pas vide
+if (!productCart) {
+  console.log("Oups c'est vide");
+}
+ 
 
 
 
