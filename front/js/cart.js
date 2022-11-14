@@ -186,69 +186,48 @@ getTotalQt ();
 //Modification de la quantité
 function getInputQt() {
 
-  //const inputItemQt = document.getElementsByClassName("itemQuantity");
-  //console.log('boucle',inputItemQt);
-
   var inputQt = document.querySelector('input[name="itemQuantity"]');
-  
-  //for (var i = 0; i<inputItemQt.length; i++) {
-    //console.log("list value", inputItemQt[i]);
-    //const formerVal = inputItemQt[i].value;
-    //console.log("value", formerVal);
-    //const inputArt = inputItemQt[i].closest('article');
-    //console.log('closest',inputArt);
-    //var artId = inputArt.getAttribute('data-id');   ça marche ça
-    //console.log('article id',artId);
+  inputQt.addEventListener('change', updateValue);
+  function updateValue(e) {
+    console.log('coucou');
+    var newVal = e.target.value;
+    console.log('newVal',newVal);  
+    console.log('query',inputQt.value);    
+    var articleQt = inputQt.closest('article');
+    console.log('article',articleQt);
+    var artId = articleQt.getAttribute('data-id');
+    console.log('articleID',artId);
+    var artColor = articleQt.getAttribute('data-color');
+    console.log('articleColor',artColor);
 
-    //inputItemQt[i].addEventListener('change', updateValue);
-    inputQt.addEventListener('change', updateValue);
-    function updateValue(e) {
-      console.log('coucou');
-      var newVal = e.target.value;
-      console.log('newVal',newVal);            
-      
-      //var inputQt = document.querySelector('input[name="itemQuantity"]');
-      console.log('query',inputQt.value);    //me retourne la newVal dans le input...Pourquoi?
-      var articleQt = inputQt.closest('article');
-      console.log('article',articleQt);
-      var artId = articleQt.getAttribute('data-id');
-      console.log('articleID',artId);
-      var artColor = articleQt.getAttribute('data-color');
-      console.log('articleColor',artColor);
+    const retrievedString = localStorage.getItem("data");
+    const parsedObject = JSON.parse(retrievedString);
+    console.log('localStorage',parsedObject);
 
-      const retrievedString = localStorage.getItem("data");
-      const parsedObject = JSON.parse(retrievedString);
-      console.log('localStorage',parsedObject);
+    for (var j = 0; j<parsedObject.length; j++) {
+      if (parsedObject[j].id == artId) {
+        parsedObject[j].quantity = newVal;
+        localStorage.setItem("quantity", JSON.stringify(parsedObject[j].quantity));
+      }          
+    }
+    var totalQty = 0;
+    for (let k = 0; k < parsedObject.length; k++) {
+      totalQty += parseInt(parsedObject[k].quantity);
+      console.log('qt totale',totalQty);
+    }
+    let totalQt = document.getElementById("totalQuantity");
+    totalQt.innerHTML = totalQty;
 
-      for (var j = 0; j<parsedObject.length; j++) {
-        //console.log('parseID',parsedObject[j].id);
-        if (parsedObject[j].id == artId) {
-          parsedObject[j].quantity = newVal;
-          //const modifiedndstrigifiedForStorage = JSON.stringify(parsedObject[j].quantity);
-          //localStorage.setItem("quantity", modifiedndstrigifiedForStorage);
-          localStorage.setItem("quantity", JSON.stringify(parsedObject[j].quantity));
-          //console.log('newlocalStorage',localStorage);
-        }          
-      }
-      var totalQty = 0;
-      for (let k = 0; k < parsedObject.length; k++) {
-        totalQty += parseInt(parsedObject[k].quantity);
-        console.log('qt totale',totalQty);
-      }
-      let totalQt = document.getElementById("totalQuantity");
-      totalQt.innerHTML = totalQty;
-
-      var totalPrice = 0;
-      for (let l = 0;l < parsedObject.length;l++){
-        console.log('prix',productCartPriceArray[l]);
-        let Price = parseInt(productCartPriceArray[l])*parseInt(parsedObject[l].quantity);
-        totalPrice += Price;
-        console.log('prix total',totalPrice);
-      }
-      let totalPriceHTML = document.getElementById("totalPrice");
-      totalPriceHTML.innerHTML = totalPrice;
-    };      
-  //}
+    var totalPrice = 0;
+    for (let l = 0;l < parsedObject.length;l++){
+      console.log('prix',productCartPriceArray[l]);
+      let Price = parseInt(productCartPriceArray[l])*parseInt(parsedObject[l].quantity);
+      totalPrice += Price;
+      console.log('prix total',totalPrice);
+    }
+    let totalPriceHTML = document.getElementById("totalPrice");
+    totalPriceHTML.innerHTML = totalPrice;
+  };        
 }
 
 //Suppression d'un article
