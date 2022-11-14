@@ -1,5 +1,7 @@
 //Cart
 
+//localStorage.clear();
+
 let productCart = [];
 let productCartPriceArray = [];
 let productCartQuantityArray = [];
@@ -178,16 +180,34 @@ getLocalStorage ();
 getProductData();
 getTotalQt ();
 
+
 // ---------------------------------------------Gestion modif et suppression
 
 //fonction de récupération des input
 function getInputQt() {
 
-  var inputItemQt = document.getElementsByClassName("itemQuantity");
+  const inputItemQt = document.getElementsByClassName("itemQuantity");
   console.log('boucle',inputItemQt);
   
   for (var i = 0; i<inputItemQt.length; i++) {
       console.log("list value", inputItemQt[i]);
+      const formerVal = inputItemQt[i].value;
+      console.log("value", formerVal);
+      const inputArt = inputItemQt[i].closest('article');
+      console.log('closest',inputArt);
+
+      inputItemQt[i].addEventListener('change', updateValue);
+        function updateValue(e) {
+          console.log('coucou');
+          var newVal = e.target.value;
+          console.log('newVal',newVal);  
+          //const r4 = inputItemQt.closest('article');
+          //console.log('closest',r4);
+        }
+      
+        
+
+      //})
   }
 //récupérer qt avec inputItemQt[i].value
   //inputItemQt.value.addEventListener("change", function(){
@@ -196,22 +216,28 @@ function getInputQt() {
   //console.log('closest',r4);
   //});
 
+  
+
+  //var mySCI = JSON.parse(localStorage["aKey"]);
+  //mySCI.SCI-12.quantity = 2;
+  //localStorage["aKey"] = JSON.stringify(mySCI);
+
 }
 
 //Suppression
 function deleteItemBt() {
-  var articleParent;
+  
   var deleteItemBt = document.getElementsByClassName("deleteItem");
   console.log('delete',deleteItemBt);
   for(var i = 0; i < deleteItemBt.length; i++) {
-
     deleteItemBt[i].addEventListener('click', function(e){
       alert('Êtes-vous sûr de vouloir supprimer cet article?');
       console.log('target',e.target);    
-      articleParent[i] = deleteItemBt[i].closest('article');
-      console.log('closest',articleParent[i]);      
-      var btId = articleParent[i].getAttribute('data-id');
-      console.log('id',btId);
+      var articleParent = [];
+      //articleParent[i] = deleteItemBt[i].closest('article');
+      //console.log('closest',articleParent[i]);      
+      //var btId = articleParent[i].getAttribute('data-id');
+      //console.log('id',btId);
       //var btColor = articleParent[i].getAttribute('data-color');
       //console.log('color',btColor);
 
@@ -359,4 +385,4 @@ submitForm.onclick = function() {
 
 window.addEventListener("load",getInputQt);
 window.addEventListener("load",deleteItemBt);
-//localStorage.clear();
+
