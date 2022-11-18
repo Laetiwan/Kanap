@@ -139,7 +139,7 @@ function getProductData() {
       console.log(productCart[i]['id']);
       console.log('value lenght',value.length);
       if (productId == productCart[i]['id']) {
-        //----------------------------------Insertion code HTML
+        //Insertion code HTML
         insertHTML(productCart[i]['id'], productCart[i]['colour'], productImg, productImgAlt, productName, productPrice, productCart[i]['quantity']);        
       }
       getTotalPrice (productPrice);
@@ -180,20 +180,23 @@ getLocalStorage ();
 getProductData();
 getTotalQt ();
 
-
 // ---------------------------------------------Gestion modif et suppression
 
 //Modification de la quantité
 function getInputQt() {
 
-  var inputQt = document.querySelector('input[name="itemQuantity"]');
-  inputQt.addEventListener('change', updateValue);
+  //var inputQt = document.querySelector('input[name="itemQuantity"]');
+  var inputQt = document.querySelectorAll('input[class="itemQuantity"]');
+  console.log("inputQt",inputQt);
+  for (var i = 0;i<inputQt.length;i++){
+      inputQt[i].addEventListener('change', updateValue);
+  }
+ 
   function updateValue(e) {
     console.log('coucou');
     var newVal = e.target.value;
-    console.log('newVal',newVal);  
-    console.log('query',inputQt.value);    
-    var articleQt = inputQt.closest('article');
+    console.log('newVal',newVal);   
+    var articleQt = e.target.closest('article');
     console.log('article',articleQt);
     var artId = articleQt.getAttribute('data-id');
     console.log('articleID',artId);
@@ -206,10 +209,12 @@ function getInputQt() {
 
     for (var j = 0; j<parsedObject.length; j++) {
       if (parsedObject[j].id == artId) {
-        parsedObject[j].quantity = newVal;
-        localStorage.setItem("quantity", JSON.stringify(parsedObject[j].quantity));
+        console.log()
+        parsedObject[j].quantity = newVal;        
       }          
     }
+    localStorage.setItem("data", JSON.stringify(parsedObject)); 
+
     var totalQty = 0;
     for (let k = 0; k < parsedObject.length; k++) {
       totalQty += parseInt(parsedObject[k].quantity);
@@ -233,39 +238,56 @@ function getInputQt() {
 //Suppression d'un article
 function deleteItemBt() {
   
-  var deleteItemBt = document.getElementsByClassName("deleteItem");
+  //var deleteItemBt = document.querySelector('p[class="deleteItem"]');
+  var deleteItemBt = document.querySelectorAll('p[class="deleteItem"]');
   console.log('delete',deleteItemBt);
-  for(var i = 0; i < deleteItemBt.length; i++) {
-    deleteItemBt[i].addEventListener('click', function(e){
-      alert('Êtes-vous sûr de vouloir supprimer cet article?');
-      console.log('target',e.target);    
-      var articleParent = [];
-      //articleParent[i] = deleteItemBt[i].closest('article');
-      //console.log('closest',articleParent[i]);      
-      //var btId = articleParent[i].getAttribute('data-id');
-      //console.log('id',btId);
-      //var btColor = articleParent[i].getAttribute('data-color');
-      //console.log('color',btColor);
+  for (var i = 0; i  <deleteItemBt.length; i++){
+    deleteItemBt[i].addEventListener('click', deleteItem);
+  }  
+  function deleteItem(e) {
+    console.log('coucou Delete');
+    var newDel = e.target;
+    console.log('newDel',newDel);
+    var articleDel = e.target.closest('article');
+    console.log('articleDel',articleDel);
+    var artIdDel = articleDel.getAttribute('data-id');
+    console.log('articleID',artIdDel);
+    //var artColorDel = articleDel.getAttribute('data-color');
+    //console.log('articleColor',artColorDel);
 
-      
-    }, false);
-  
-  
-    //var btId = articleParent.getAttribute("data-id");
-    //console.log('id',articleParent);
-    //var btColor = articleParent.getAttribute("data-color");
-    //console.log('color',articleParent);
-    //var par = deleteItemBt[i].parentNode;
-    //console.log('parentBt',par);
+    const retrievedDel = localStorage.getItem("data");
+    console.log('localStorage',retrievedDel);
+    const parsedObjectDel = JSON.parse(retrievedDel);
+    console.log('localStorage',parsedObjectDel);
+
+    for (var i = 0; i<parsedObjectDel.length; i++) {
+      if (parsedObjectDel[i].id == artIdDel) {
+        console.log('i',i);
+        //localStorage.removeItem("id", JSON.stringify(parsedObject[i].id), "colour", JSON.stringify(parsedObject[i].colour), "quantity", JSON.stringify(parsedObject[i].quantity));
+        //localStorage.removeItem("id", artIdDel);
+        
+        //localStorage.removeItem(artIdDel);
+        //console.log('newlocalStorage',parsedObjectDel);
+
+        //console.log('coucou');
+        //var artDel = e.target.closest('article');
+        //console.log('article',artDel);
+        //var artDelId = artDel.getAttribute('data-id');   inutile?
+        //console.log('articleIDeffacer',artDelId);        inutile?
+        //if (artDel.parentNode) {
+          //artDel.parentNode.removeChild(artDel);      ca marche, enleve l'article concerné
+        //}
+      }          
+    }
+    //localStorage.removeItem("data", JSON.stringify(parsedObjectDel));
+    //console.log('newlocalStorage',parsedObjectDel);
 
   }
-}
+      
+  }
+    
 
-
-
-
-
-
+  
 //-------------------------------------------------------------------------------------------------
 
 //Validation formulaire
