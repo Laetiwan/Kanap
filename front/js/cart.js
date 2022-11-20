@@ -1,7 +1,5 @@
 //Cart
 
-//localStorage.clear();
-
 let productCart = [];
 let productCartPriceArray = [];
 let productCartQuantityArray = [];
@@ -27,9 +25,7 @@ function getLocalStorage () {
   if (!productCartLocal) {
     console.log("Oups c'est vide");
   }
-
   console.log('localStorageparsed lenght',productCartLocalJSON.length);
-
   for(var i = 0; i < productCartLocalJSON.length; i++) {
     productCart.push({'id':productCartLocalJSON[i].id,'colour':productCartLocalJSON[i].colour,'quantity' : productCartLocalJSON[i].quantity});
     console.log(productCart[i]);
@@ -99,9 +95,9 @@ function insertHTML(productCartId, productCartColour, productImg, productImgAlt,
   newContentSettingsQtInput.setAttribute("min","1");
   newContentSettingsQtInput.setAttribute("max","100");
   newContentSettingsQtInput.setAttribute("value", productCartQuantity);
-if ((productCartQuantity < 1) || (productCartQuantity > 100)) {
-  alert("Veuillez entrer une quantité valide comprise entre 0 et 100");
-}
+  if ((productCartQuantity < 1) || (productCartQuantity > 100)) {
+    alert("Veuillez entrer une quantité valide comprise entre 0 et 100");
+  }
   newContentSettingsQt.appendChild(newContentSettingsQtInput);
 
   //balise div content settings delete
@@ -109,7 +105,6 @@ if ((productCartQuantity < 1) || (productCartQuantity > 100)) {
   newContentSettingsDel.setAttribute("class","cart__item__content__settings__delete");
   newContentSettings.appendChild(newContentSettingsDel); 
   newContentSettingsDel.innerHTML = '<p class="deleteItem">Supprimer</p>';
-
 }
 
 //Fonction qui recherche données produits avec l'id
@@ -153,7 +148,7 @@ function getProductData() {
 }
 
 //fonction pour calculer quantité totale
-function getTotalQt () {
+function getTotalQt() {
   var totalQty = 0;
   for (let i = 0; i < productCart.length; i++) {
     totalQty += parseInt(productCart[i]['quantity']);
@@ -165,7 +160,7 @@ totalQt.innerHTML = totalQty;
 }
 
 //fonction pour calculer prix total
-function getTotalPrice () {
+function getTotalPrice() {
   var totalPrice = 0;
   for (let i = 0;i < productCart.length;i++){
     let Price = parseInt(productCartPriceArray[i])*parseInt(productCartQuantityArray[i]);
@@ -176,11 +171,11 @@ function getTotalPrice () {
   totalPriceHTML.innerHTML = totalPrice;
 }
 
-getLocalStorage ();
+getLocalStorage();
 getProductData();
 getTotalQt ();
 
-// ---------------------------------------------Gestion modif et suppression
+//Gestion modif et suppression
 
 //Modification de la quantité
 function getInputQt() {
@@ -238,7 +233,6 @@ function getInputQt() {
 //Suppression d'un article
 function deleteItemBt() {
   
-  //var deleteItemBt = document.querySelector('p[class="deleteItem"]');
   var deleteItemBt = document.querySelectorAll('p[class="deleteItem"]');
   console.log('delete',deleteItemBt);
   for (var i = 0; i  <deleteItemBt.length; i++){
@@ -252,50 +246,73 @@ function deleteItemBt() {
     console.log('articleDel',articleDel);
     var artIdDel = articleDel.getAttribute('data-id');
     console.log('articleID',artIdDel);
-    //var artColorDel = articleDel.getAttribute('data-color');
-    //console.log('articleColor',artColorDel);
-
+    
     const retrievedDel = localStorage.getItem("data");
     console.log('localStorage',retrievedDel);
     const parsedObjectDel = JSON.parse(retrievedDel);
     console.log('localStorage',parsedObjectDel);
 
-    for (var i = 0; i<parsedObjectDel.length; i++) {
+    for (var i = 0; i < parsedObjectDel.length; i++) {
       if (parsedObjectDel[i].id == artIdDel) {
         console.log('i',i);
-        //localStorage.removeItem("id", JSON.stringify(parsedObject[i].id), "colour", JSON.stringify(parsedObject[i].colour), "quantity", JSON.stringify(parsedObject[i].quantity));
-        //localStorage.removeItem("id", artIdDel);
-        
-        //localStorage.removeItem(artIdDel);
-        //console.log('newlocalStorage',parsedObjectDel);
-
-        //console.log('coucou');
-        //var artDel = e.target.closest('article');
-        //console.log('article',artDel);
-        //var artDelId = artDel.getAttribute('data-id');   inutile?
-        //console.log('articleIDeffacer',artDelId);        inutile?
-        //if (artDel.parentNode) {
-          //artDel.parentNode.removeChild(artDel);      ca marche, enleve l'article concerné
-        //}
+        parsedObjectDel.splice(i, 1);
+        var artDel = e.target.closest('article');
+        console.log('article',artDel);
+        if (artDel.parentNode) {
+          artDel.parentNode.removeChild(artDel);      
+        }
       }          
     }
-    //localStorage.removeItem("data", JSON.stringify(parsedObjectDel));
-    //console.log('newlocalStorage',parsedObjectDel);
+    localStorage.setItem("data", JSON.stringify(parsedObjectDel));  
+    console.log('newlocalStorage',parsedObjectDel);
 
+  var totalQty = 0;
+  for (let k = 0; k < parsedObjectDel.length; k++) {
+    totalQty += parseInt(parsedObjectDel[k].quantity);
+    console.log('qt totale',totalQty);
   }
-      
-  }
-    
+  let totalQt = document.getElementById("totalQuantity");
+  totalQt.innerHTML = totalQty;
 
+  var totalPrice = 0;
+  for (let l = 0;l < parsedObjectDel.length;l++){
+    console.log('prix',productCartPriceArray[l]);
+    let Price = parseInt(productCartPriceArray[l])*parseInt(parsedObjectDel[l].quantity);
+    totalPrice += Price;
+    console.log('prix total',totalPrice);
+  }
+  let totalPriceHTML = document.getElementById("totalPrice");
+  totalPriceHTML.innerHTML = totalPrice;
+  }
+} 
+
+//création tableau de produits
+function cartArray() {
+  const cartData = localStorage.getItem("data");
+  console.log('localStorage',cartData);
+  const parsedcartData = JSON.parse(cartData);
+  console.log('parsed localStorage',parsedcartData);
+}
   
 //-------------------------------------------------------------------------------------------------
+
+var formData = new FormData();
+let firstNameObj;
+let lastNameObj;
+let addressObj;
+let cityObj;
+let emailObj;
+
 
 //Validation formulaire
 function checkfName() {
   //prénom
   let fName = document.getElementById("firstName").value;
-  let fNameErrorMsg = document.getElementById("firstNameErrorMsg");
+  formData.append("firstName", fName);
+  firstNameObj = formData.get("firstName");
   console.log('prenom', fName);
+  console.log('form prenom', firstNameObj);
+  let fNameErrorMsg = document.getElementById("firstNameErrorMsg");
   if(fName == '') {
     fNameErrorMsg.innerHTML = 'Erreur : Le champ doit être rempli';
     fName.focus;
@@ -315,8 +332,11 @@ function checkfName() {
 function checklName() {
   //nom
   let lName = document.getElementById("lastName").value;
-  let lNameErrorMsg = document.getElementById("lastNameErrorMsg");
+  formData.append("lastName", lName);
+  lastNameObj = formData.get("lastName");
   console.log('nom', lName);
+  console.log('form nom', lastNameObj);
+  let lNameErrorMsg = document.getElementById("lastNameErrorMsg");  
   if(lName == '') {
     lNameErrorMsg.innerHTML = 'Erreur : Le champ doit être rempli';
     lName.focus;
@@ -336,8 +356,11 @@ function checklName() {
 function checkAdress() {
   //adresse
   let adresse = document.getElementById("address").value;
-  let addErrorMsg = document.getElementById("addressErrorMsg");
+  formData.append("address", adresse);
+  addressObj = formData.get("address");
   console.log('adresse', adresse);
+  console.log('form adress', addressObj);
+  let addErrorMsg = document.getElementById("addressErrorMsg");  
   if(adresse == '') {
     addErrorMsg.innerHTML = 'Erreur : Le champ doit être rempli';
     adresse.focus;
@@ -352,8 +375,11 @@ function checkAdress() {
 function checkCity() {
   //adresse
   let ville = document.getElementById("city").value;
-  let cErrorMsg = document.getElementById("cityErrorMsg");
+  formData.append("city", ville);
+  cityObj = formData.get("city");
   console.log('city', ville);
+  console.log('form city', cityObj);
+  let cErrorMsg = document.getElementById("cityErrorMsg");  
   if(ville == '') {
     cErrorMsg.innerHTML = 'Erreur : Le champ doit être rempli';
     ville.focus;
@@ -373,8 +399,11 @@ function checkCity() {
 function checkEmail() {
   //adresse
   let email = document.getElementById("email").value;
-  let mailErrorMsg = document.getElementById("emailErrorMsg");
+  formData.append("email", email);
+  emailObj = formData.get("email");
   console.log('email', email);
+  console.log('form email', emailObj);
+  let mailErrorMsg = document.getElementById("emailErrorMsg");  
   if(email == '') {
     mailErrorMsg.innerHTML = 'Erreur : Le champ doit être rempli';
     email.focus;
@@ -402,15 +431,24 @@ submitForm.onclick = function() {
 
     //Objet Contact + tableau de produits
     var contact = {
-      firstNameC : fName,
-      lastNameC: lName,
-      adresseC: adresse,
-      villeC : ville,
-      emailC: email,
+      firstName : firstNameObj,
+      lastName: lastNameObj,
+      adresse: addressObj,
+      ville : cityObj,
+      email: emailObj,
     }
     console.log('contact', contact);    
+
+    //tableau produits
+    cartArray();
+
+    alert('Vous avez validé votre commande!');
   };
 
 window.addEventListener("load",getInputQt);
 window.addEventListener("load",deleteItemBt);
+
+
+
+//localStorage.clear();
 
