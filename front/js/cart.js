@@ -291,7 +291,9 @@ function cartArray() {
   const cartData = localStorage.getItem("data");
   console.log('localStorage',cartData);
   const parsedcartData = JSON.parse(cartData);
+  //console.log('parsed localStorage test',parsedcartData[0]);
   console.log('parsed localStorage',parsedcartData);
+  return(parsedcartData);
 }
   
 //-------------------------------------------------------------------------------------------------
@@ -351,6 +353,7 @@ function checklName() {
     lNameErrorMsg.style.display="none"; 
     return true;
   } 
+
 };
 
 function checkAdress() {
@@ -422,28 +425,55 @@ function checkEmail() {
   
 let submitForm = document.getElementById("order");  
 submitForm.onclick = function() {
-  
-    checkfName();
-    checklName();
-    checkAdress();
-    checkCity();
-    checkEmail();    
+  console.log("aerfazef")
+    if(checkfName()&&checklName()&&checkAdress()&&checkCity()&&checkEmail()) {
+      console.log("baerfazef")
+      let contact = {
+        "firstName" : firstNameObj,
+        "lastName": lastNameObj,
+        "address": addressObj,
+        "city" : cityObj,
+        "email": emailObj,
+      }
+      ///////////////////
+      // CURIEUX ! Il faut envoyer un tableau d'ids et pas un tableau complet avec quantités et couleurs !!
+      ///////////////////
 
-    //Objet Contact + tableau de produits
-    var contact = {
-      firstName : firstNameObj,
-      lastName: lastNameObj,
-      adresse: addressObj,
-      ville : cityObj,
-      email: emailObj,
-    }
-    console.log('contact', contact);    
+      tempArray = cartArray();
+      sentArray = [];
 
-    //tableau produits
-    cartArray();
+      for (let i = 0;i<tempArray.length;i++){
+        sentArray.push(tempArray[i]['id']);
+      }
 
-    alert('Vous avez validé votre commande!');
+      ///////////////
+      // FIN DE GENERATION DU TABLEAU D'IDS 
+      // REMPLACER sentArray éventuellement ?
+      ///////////////
+      console.log("sentarray", sentArray)
+      orderFromApi(contact,sentArray);
+    }    
   };
+
+orderFromApi = async function(contact,products){
+  console.log(contact);
+  let messageSentToApi = {"contact" : contact, "products" : products}
+  console.log('Produits à envoyer :',products);
+  let response = await fetch("http://localhost:3000/api/products/order", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8'
+    },
+    body: JSON.stringify(messageSentToApi)
+  });
+  
+  console.log(response)
+  let result = await response.json();
+  alert("La commande "+result['orderId']+" est validée.");  
+  document.location.href = "../html/confirmation.html?id="+result['orderId']+"";
+}
+
+
 
 window.addEventListener("load",getInputQt);
 window.addEventListener("load",deleteItemBt);

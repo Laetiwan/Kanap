@@ -78,7 +78,7 @@ fetch ("http://localhost:3000/api/products")
     
     //ref produit
     let productRef = index.get('id');
-    console.log(productRef); 
+    console.log('product ref', productRef); 
 
     //qt produit
     var productQt = document.getElementById('quantity').value;
