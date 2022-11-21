@@ -44,7 +44,7 @@ function insertHTML(productCartId, productCartColour, productImg, productImgAlt,
   newArticle.setAttribute("data-color",productCartColour);
   cartItems.appendChild(newArticle); 
 
-  //balise div image
+  //balise div image
   var newImg = document.createElement("div"); 
   newImg.setAttribute("class","cart__item__img");
   newArticle.appendChild(newImg); 
@@ -88,23 +88,23 @@ function insertHTML(productCartId, productCartColour, productImg, productImgAlt,
   newContentSettings.appendChild(newContentSettingsQt); 
   newContentSettingsQt.innerHTML = '<p>"Qté : "</p>';
 
-  var newContentSettingsQtInput = document.createElement("input"); 
+  var newContentSettingsQtInput = document.createElement("input"); 
   newContentSettingsQtInput.setAttribute("type","number");
   newContentSettingsQtInput.setAttribute("class","itemQuantity");
   newContentSettingsQtInput.setAttribute("name","itemQuantity");
   newContentSettingsQtInput.setAttribute("min","1");
   newContentSettingsQtInput.setAttribute("max","100");
   newContentSettingsQtInput.setAttribute("value", productCartQuantity);
-  if ((productCartQuantity < 1) || (productCartQuantity > 100)) {
-    alert("Veuillez entrer une quantité valide comprise entre 0 et 100");
-  }
+  if ((productCartQuantity < 1) || (productCartQuantity > 100)) {
+    alert("Veuillez entrer une quantité valide comprise entre 0 et 100");
+  }
   newContentSettingsQt.appendChild(newContentSettingsQtInput);
 
   //balise div content settings delete
   var newContentSettingsDel = document.createElement("div");  
   newContentSettingsDel.setAttribute("class","cart__item__content__settings__delete");
   newContentSettings.appendChild(newContentSettingsDel); 
-  newContentSettingsDel.innerHTML = '<p class="deleteItem">Supprimer</p>';
+  newContentSettingsDel.innerHTML = '<p class="deleteItem">Supprimer</p>';  
 }
 
 //Fonction qui recherche données produits avec l'id
@@ -205,7 +205,10 @@ function getInputQt() {
     for (var j = 0; j<parsedObject.length; j++) {
       if (parsedObject[j].id == artId) {
         console.log()
-        parsedObject[j].quantity = newVal;        
+        parsedObject[j].quantity = newVal;  
+        if ((newVal < 1) || (newVal > 100)) {
+          alert("Veuillez entrer une quantité valide comprise entre 1 et 100");
+        }      
       }          
     }
     localStorage.setItem("data", JSON.stringify(parsedObject)); 
@@ -296,15 +299,13 @@ function cartArray() {
   return(parsedcartData);
 }
   
-//-------------------------------------------------------------------------------------------------
-
+//Formulaire
 var formData = new FormData();
 let firstNameObj;
 let lastNameObj;
 let addressObj;
 let cityObj;
 let emailObj;
-
 
 //Validation formulaire
 function checkfName() {
@@ -353,7 +354,6 @@ function checklName() {
     lNameErrorMsg.style.display="none"; 
     return true;
   } 
-
 };
 
 function checkAdress() {
@@ -435,10 +435,7 @@ submitForm.onclick = function() {
         "city" : cityObj,
         "email": emailObj,
       }
-      ///////////////////
-      // CURIEUX ! Il faut envoyer un tableau d'ids et pas un tableau complet avec quantités et couleurs !!
-      ///////////////////
-
+      
       tempArray = cartArray();
       sentArray = [];
 
@@ -446,10 +443,6 @@ submitForm.onclick = function() {
         sentArray.push(tempArray[i]['id']);
       }
 
-      ///////////////
-      // FIN DE GENERATION DU TABLEAU D'IDS 
-      // REMPLACER sentArray éventuellement ?
-      ///////////////
       console.log("sentarray", sentArray)
       orderFromApi(contact,sentArray);
     }    
@@ -472,13 +465,8 @@ orderFromApi = async function(contact,products){
   alert("La commande "+result['orderId']+" est validée.");  
   document.location.href = "../html/confirmation.html?id="+result['orderId']+"";
 }
-
-
-
 window.addEventListener("load",getInputQt);
 window.addEventListener("load",deleteItemBt);
 
-
-
-//localStorage.clear();
+localStorage.clear();
 

@@ -35,7 +35,7 @@ fetch ("http://localhost:3000/api/products")
   let id = params.get("id");
   let productIndex = searchProduct(id,value);  
 
-  //--------------------------------------------------------- Récupération des données du tableau
+  //Récupération des données du tableau
   var productId = value[productIndex]._id;
   var productImg = value[productIndex].imageUrl;
   var productImgAlt = value[productIndex].altTxt;
@@ -47,100 +47,96 @@ fetch ("http://localhost:3000/api/products")
   var productUrl = `./product.html?id=${productId}`;
   console.log(productUrl); 
 
-  //--------------------------------------------------------- Création dans le html
-    
+  insertUserData();
+
+  //Insertion des données produits dans le html
+  function insertUserData() {  
   //ajout nom produit
   document.querySelector('h1').innerText = productName;      
- 
   //ajout prix produit
-  document.querySelector('span').innerText = productPrice;   
-
+  document.querySelector('span').innerText = productPrice;  
   //ajout description produit   
   document.getElementById ('description').innerText = productDescription;   
-
   //ajout options couleurs
   for (let i = 0; i < productColors.length; i++){
     document.querySelector('option').insertAdjacentHTML('afterend', `<option value=${productColors[i]}>${productColors[i]}</option>`);
   }
   console.log(productColors);
   //ajout image
-  document.querySelector('div.item__img').innerHTML = '<img src="'+productImg+'" alt="'+productImgAlt+'">';          
-  })  
-  .catch(function(err) {
-    // Une erreur est survenue
-    alert('Une erreur a été rencontrée');
-  });
-  
-  //Fonction récupérant les données du produit sélectionné
-  function getUserData() {
-  
-    let index = new URLSearchParams(window.location.search);
-    
-    //ref produit
-    let productRef = index.get('id');
-    console.log('product ref', productRef); 
-
-    //qt produit
-    var productQt = document.getElementById('quantity').value;
-    console.log(productQt);  
-    if ((productQt < 1) || (productQt > 100)) {
-      alert("Veuillez entrer une quantité valide comprise entre 1 et 100");
-    }
-
-    //couleur produit
-    var selectColor = document.getElementById('colors');
-    var productColor = selectColor.options[selectColor.selectedIndex].value;
-    console.log(productColor);
-    
-    var productReturn = {'id' : productRef,'colour' : productColor,'quantity' : productQt};    
-    return(productReturn);        
+  document.querySelector('div.item__img').innerHTML = '<img src="'+productImg+'" alt="'+productImgAlt+'">';  
   }
   
-  //Constitution du panier     
-  //Evenement clic bouton "Ajouter au panier"
-  const button = document.getElementById('addToCart');
-  button.setAttribute("type", "button");
-  button.disabled = true;
+})
+.catch(function(err) {
+  // Une erreur est survenue
+  alert('Une erreur a été rencontrée');
+});
   
-  // bouton activé quand choix couleur rempli
-  var selectColor2 = document.getElementById('colors');
-  selectColor2.addEventListener('change', function() {
-  var productColor2 = selectColor2.options[selectColor2.selectedIndex].value;
-  console.log('color2',productColor2);
-  if (productColor2 != '') button.disabled = false;
-  })
+//Fonction récupérant les données du produit sélectionné
+function getUserData() {
 
-  button.onclick = function() {
-    
-    let data = []
-    data = getUserData();
-    console.log(data);      
-    
-    let productData = localStorage.getItem("data")
-    ? JSON.parse(localStorage.getItem("data"))
-    : [];
+  let index = new URLSearchParams(window.location.search);  
+  //ref produit
+  let productRef = index.get('id');
+  console.log('product ref', productRef); 
+  //qt produit
+  var productQt = document.getElementById('quantity').value;
+  console.log(productQt);  
+  if ((productQt < 1) || (productQt > 100)) {
+    alert("Veuillez entrer une quantité valide comprise entre 1 et 100");
+  }
+  //couleur produit
+  var selectColor = document.getElementById('colors');
+  var productColor = selectColor.options[selectColor.selectedIndex].value;
+  console.log(productColor);  
+  var productReturn = {'id' : productRef,'colour' : productColor,'quantity' : productQt};    
+  return(productReturn);        
+}
+  
+//Constitution du panier     
+//Evenement clic bouton "Ajouter au panier"
+const button = document.getElementById('addToCart');
+button.setAttribute("type", "button");
+button.disabled = true;
 
-    var index = searchProductInLocalData(data['id'],data['colour'],productData);
-    console.log("couleur",data['colour'])
-    if(data['colour'] == '') {
-      button.disabled = true;
-    }
+// bouton activé quand choix couleur rempli
+var selectColor2 = document.getElementById('colors');
+selectColor2.addEventListener('change', function() {
+var productColor2 = selectColor2.options[selectColor2.selectedIndex].value;
+console.log('color2',productColor2);
+if (productColor2 != '') button.disabled = false;
+})
 
-    if (index == false) {
-    productData.push(data);
+button.onclick = function() {
+  
+  let data = []
+  data = getUserData();
+  console.log(data);      
+  
+  let productData = localStorage.getItem("data")
+  ? JSON.parse(localStorage.getItem("data"))
+  : [];
+
+  var index = searchProductInLocalData(data['id'],data['colour'],productData);
+  console.log("couleur",data['colour'])
+  if(data['colour'] == '') {
+    button.disabled = true;
+  }
+
+  if (index == false) {
+  productData.push(data);
+  localStorage.setItem("data", JSON.stringify(productData));
+  console.log(localStorage);
+  console.log(productData.length);
+  }
+  else {
+    console.log(productData[index]['quantity']);
+    productData[index]['quantity']=parseInt(productData[index]['quantity'])+1;
     localStorage.setItem("data", JSON.stringify(productData));
     console.log(localStorage);
-    console.log(productData.length);
-    }
-    else {
-      console.log(productData[index]['quantity']);
-      productData[index]['quantity']=parseInt(productData[index]['quantity'])+1;
-      localStorage.setItem("data", JSON.stringify(productData));
-      console.log(localStorage);
-    }
-
-    document.location.href = "../html/cart.html";  
-  };        
+  }
+  document.location.href = "../html/cart.html";  
+};        
   
     
   
