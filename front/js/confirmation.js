@@ -15,5 +15,7 @@ function getCommandNumber() {
 
 getCommandNumber();
 
+//localStorage.clear();
+
 
 

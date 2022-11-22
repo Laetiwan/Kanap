@@ -468,5 +468,5 @@ orderFromApi = async function(contact,products){
 window.addEventListener("load",getInputQt);
 window.addEventListener("load",deleteItemBt);
 
-localStorage.clear();
+
 
