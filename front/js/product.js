@@ -1,5 +1,7 @@
 //Produits
 
+var selectColor = document.getElementById('colors');
+
 //function indiquant la place du produit dans le tableau
 // Paramètre : id produit
 // Sortie : numéro dans le tableau / -1 si pas de produit.
@@ -32,7 +34,7 @@ fetch ("http://localhost:3000/api/products")
   console.log(value);
   
   let params = new URLSearchParams(window.location.search);
-  let id = params.get("id");
+  const id = params.get("id");
   let productIndex = searchProduct(id,value);  
 
   //Récupération des données du tableau
@@ -86,7 +88,7 @@ function getUserData() {
     alert("Veuillez entrer une quantité valide comprise entre 1 et 100");
   }
   //couleur produit
-  var selectColor = document.getElementById('colors');
+  //var selectColor = document.getElementById('colors');
   var productColor = selectColor.options[selectColor.selectedIndex].value;
   console.log(productColor);  
   var productReturn = {'id' : productRef,'colour' : productColor,'quantity' : productQt};    
@@ -100,38 +102,37 @@ button.setAttribute("type", "button");
 button.disabled = true;
 
 // bouton activé quand choix couleur rempli
-var selectColor2 = document.getElementById('colors');
-selectColor2.addEventListener('change', function() {
-var productColor2 = selectColor2.options[selectColor2.selectedIndex].value;
-console.log('color2',productColor2);
-if (productColor2 != '') button.disabled = false;
+selectColor.addEventListener('change', function() {
+var productColor = selectColor.options[selectColor.selectedIndex].value;
+console.log('color2',productColor);
+if (productColor != '') button.disabled = false;
 })
 
 button.onclick = function() {
   
-  let data = []
-  data = getUserData();
+  //let data = []
+  let data = getUserData();
   console.log(data);      
   
   let productData = localStorage.getItem("data")
   ? JSON.parse(localStorage.getItem("data"))
   : [];
 
-  var index = searchProductInLocalData(data['id'],data['colour'],productData);
+  var indexCurrentProject = searchProductInLocalData(data['id'],data['colour'],productData);
   console.log("couleur",data['colour'])
   if(data['colour'] == '') {
     button.disabled = true;
   }
 
-  if (index == false) {
-  productData.push(data);
-  localStorage.setItem("data", JSON.stringify(productData));
-  console.log(localStorage);
-  console.log(productData.length);
+  if (indexCurrentProject == false) {
+    productData.push(data);
+    localStorage.setItem("data", JSON.stringify(productData));
+    console.log(localStorage);
+    console.log(productData.length);
   }
   else {
-    console.log(productData[index]['quantity']);
-    productData[index]['quantity']=parseInt(productData[index]['quantity'])+1;
+    console.log(productData[indexCurrentProject]['quantity']);
+    productData[indexCurrentProject]['quantity']=parseInt(productData[indexCurrentProject]['quantity'])+1;
     localStorage.setItem("data", JSON.stringify(productData));
     console.log(localStorage);
   }
