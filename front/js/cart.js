@@ -4,6 +4,12 @@ let productCart = [];
 let productCartPriceArray = [];
 let productCartQuantityArray = [];
 
+
+let productCartLocal = localStorage.getItem("data")
+  ? JSON.parse(localStorage.getItem("data"))
+  : [];
+  console.log('localStorage01',productCartLocal);
+
 //Fonction qui récupère l'index
 function getMatchingIndex(id,array){
   for (let i = 0;i < array.length;i++){
@@ -180,7 +186,6 @@ getTotalQt ();
 //Modification de la quantité
 function getInputQt() {
 
-  //var inputQt = document.querySelector('input[name="itemQuantity"]');
   var inputQt = document.querySelectorAll('input[class="itemQuantity"]');
   console.log("inputQt",inputQt);
   for (var i = 0;i<inputQt.length;i++){
@@ -292,10 +297,9 @@ function deleteItemBt() {
 //création tableau de produits
 function cartArray() {
   const cartData = localStorage.getItem("data");
-  console.log('localStorage',cartData);
+  console.log('localStoragecartArray',cartData);
   const parsedcartData = JSON.parse(cartData);
-  //console.log('parsed localStorage test',parsedcartData[0]);
-  console.log('parsed localStorage',parsedcartData);
+  console.log('parsed localStoragecartArray',parsedcartData);
   return(parsedcartData);
 }
   
@@ -425,26 +429,29 @@ function checkEmail() {
   
 let submitForm = document.getElementById("order");  
 submitForm.onclick = function() {
-  console.log("aerfazef")
-    if(checkfName()&&checklName()&&checkAdress()&&checkCity()&&checkEmail()) {
-      console.log("baerfazef")
-      let contact = {
-        "firstName" : firstNameObj,
-        "lastName": lastNameObj,
-        "address": addressObj,
-        "city" : cityObj,
-        "email": emailObj,
-      }
+  checkfName();
+  checklName();
+  checkAdress();
+  checkCity();
+  checkEmail();
+  if(checkfName()&&checklName()&&checkAdress()&&checkCity()&&checkEmail()) {
+    let contact = {
+      "firstName" : firstNameObj,
+      "lastName": lastNameObj,
+      "address": addressObj,
+      "city" : cityObj,
+      "email": emailObj,
+    }
       
-      tempArray = cartArray();
-      sentArray = [];
+    tempArray = cartArray();
+    sentArray = [];
 
-      for (let i = 0;i<tempArray.length;i++){
-        sentArray.push(tempArray[i]['id']);
-      }
+    for (let i = 0;i<tempArray.length;i++){
+      sentArray.push(tempArray[i]['id']);
+    }
 
-      console.log("sentarray", sentArray)
-      orderFromApi(contact,sentArray);
+    console.log("sentarray", sentArray)
+    orderFromApi(contact,sentArray);
     }    
   };
 
@@ -468,5 +475,5 @@ orderFromApi = async function(contact,products){
 window.addEventListener("load",getInputQt);
 window.addEventListener("load",deleteItemBt);
 
-localStorage.clear();
+
 

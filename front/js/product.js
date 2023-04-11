@@ -88,7 +88,6 @@ function getUserData() {
     alert("Veuillez entrer une quantité valide comprise entre 1 et 100");
   }
   //couleur produit
-  //var selectColor = document.getElementById('colors');
   var productColor = selectColor.options[selectColor.selectedIndex].value;
   console.log(productColor);  
   var productReturn = {'id' : productRef,'colour' : productColor,'quantity' : productQt};    
@@ -110,7 +109,6 @@ if (productColor != '') button.disabled = false;
 
 button.onclick = function() {
   
-  //let data = []
   let data = getUserData();
   console.log(data);      
   
