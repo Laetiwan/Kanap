@@ -312,10 +312,11 @@ let cityObj;
 let emailObj;
 
 //Validation formulaire
+
 function checkfName() {
   //prénom
   let fName = document.getElementById("firstName").value;
-  formData.append("firstName", fName);
+  formData.set("firstName", fName);
   firstNameObj = formData.get("firstName");
   console.log('prenom', fName);
   console.log('form prenom', firstNameObj);
@@ -339,7 +340,7 @@ function checkfName() {
 function checklName() {
   //nom
   let lName = document.getElementById("lastName").value;
-  formData.append("lastName", lName);
+  formData.set("lastName", lName);
   lastNameObj = formData.get("lastName");
   console.log('nom', lName);
   console.log('form nom', lastNameObj);
@@ -363,7 +364,7 @@ function checklName() {
 function checkAdress() {
   //adresse
   let adresse = document.getElementById("address").value;
-  formData.append("address", adresse);
+  formData.set("address", adresse);
   addressObj = formData.get("address");
   console.log('adresse', adresse);
   console.log('form adress', addressObj);
@@ -382,7 +383,7 @@ function checkAdress() {
 function checkCity() {
   //adresse
   let ville = document.getElementById("city").value;
-  formData.append("city", ville);
+  formData.set("city", ville);
   cityObj = formData.get("city");
   console.log('city', ville);
   console.log('form city', cityObj);
@@ -406,7 +407,7 @@ function checkCity() {
 function checkEmail() {
   //adresse
   let email = document.getElementById("email").value;
-  formData.append("email", email);
+  formData.set("email", email);
   emailObj = formData.get("email");
   console.log('email', email);
   console.log('form email', emailObj);
@@ -427,13 +428,9 @@ function checkEmail() {
   } 
 };
   
+  
 let submitForm = document.getElementById("order");  
-submitForm.onclick = function() {
-  checkfName();
-  checklName();
-  checkAdress();
-  checkCity();
-  checkEmail();
+submitForm.onclick = function() {  
   if(checkfName()&&checklName()&&checkAdress()&&checkCity()&&checkEmail()) {
     let contact = {
       "firstName" : firstNameObj,
