@@ -430,7 +430,7 @@ function checkEmail() {
   
   
 let submitForm = document.getElementById("order");  
-submitForm.onclick = function() {  
+submitForm.onclick = function() {    
   if(checkfName()&&checklName()&&checkAdress()&&checkCity()&&checkEmail()) {
     let contact = {
       "firstName" : firstNameObj,
